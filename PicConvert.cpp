@@ -664,9 +664,15 @@ int	PicConvert::CropScale(AVFrame* pFrame, int nCropX, int nCropY, int nCropWidt
 		pInputs->next = NULL;
 
 		char filter_descr[256] = { 0 };
+#ifdef _WIN32
 		_snprintf(filter_descr, sizeof(filter_descr),
 			"crop=w=%d:h=%d:x=%d:y=%d,scale=%d:%d,format=pix_fmts=yuv420p",
 			nCropWidth, nCropHeight, nCropX, nCropY, nOutWidth, nOutHeight);
+#else
+		snprintf(filter_descr, sizeof(filter_descr),
+			"crop=w=%d:h=%d:x=%d:y=%d,scale=%d:%d,format=pix_fmts=yuv420p",
+			nCropWidth, nCropHeight, nCropX, nCropY, nOutWidth, nOutHeight);
+#endif
 		//const char *filter_descr = "crop=w=800:h=800:x=200:y=200,scale=1920:1080";
 		if ((ret = avfilter_graph_parse_ptr(pFilterGraph, filter_descr,
 			&pInputs, &pOutputs, NULL)) < 0)
